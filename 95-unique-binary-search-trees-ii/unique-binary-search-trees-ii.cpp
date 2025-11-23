@@ -10,22 +10,16 @@
 
 class Solution {
 public:
-    vector<TreeNode*> generateTrees(int start, int end) {
+    vector<TreeNode*> generateTree(int start, int end) {
         if (start > end)
-            return {nullptr};  // empty tree
+            return {nullptr};
 
         vector<TreeNode*> result;
 
-        // Pick each number as root
         for (int root = start; root <= end; root++) {
+            vector<TreeNode*> leftTrees = generateTree(start, root - 1);
+            vector<TreeNode*> rightTrees = generateTree(root + 1, end);
 
-            // Generate all possible left subtrees
-            vector<TreeNode*> leftTrees = generateTrees(start, root - 1);
-
-            // Generate all possible right subtrees
-            vector<TreeNode*> rightTrees = generateTrees(root + 1, end);
-
-            // Combine all left and right subtree pairs
             for (auto left : leftTrees) {
                 for (auto right : rightTrees) {
                     TreeNode* node = new TreeNode(root);
@@ -41,6 +35,6 @@ public:
 
     vector<TreeNode*> generateTrees(int n) {
         if (n == 0) return {};
-        return generateTrees(1, n);
+        return generateTree(1, n);
     }
 };
