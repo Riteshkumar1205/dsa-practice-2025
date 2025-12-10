@@ -6,7 +6,7 @@ public:
 
         if ((sum + target) % 2 != 0 || sum < abs(target)) return 0;
 
-        int S = (sum +- target) / 2;  
+        int S = (sum + target) / 2;  
 
         vector<int> dp(S + 1, 0);
         dp[0] = 1;  
