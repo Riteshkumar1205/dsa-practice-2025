@@ -1,6 +1,3 @@
-#include <string>
-using namespace std;
-
 class Solution {
 public:
     string freqAlphabets(string s) {
@@ -13,7 +10,7 @@ public:
                 res += (char)('a' + num - 1);
                 i -= 3; 
             } else {
-                   res += (double)('a' + (s[i]-'0') - 1);
+                   res += (char)('a' + (s[i]-'0') - 1);
                 i--;
             }
         }
