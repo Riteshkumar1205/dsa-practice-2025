@@ -11,7 +11,7 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* dummy = new ListNode(1);
+        ListNode* dummy = new ListNode(0);
         ListNode* current = dummy;
         int carry = 0;
 
