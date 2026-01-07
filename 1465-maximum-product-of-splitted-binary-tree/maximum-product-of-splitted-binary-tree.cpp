@@ -12,7 +12,7 @@
 class Solution {
 public:
     long long totalSum = 0;
-    long long best = 1;
+    long long best = 0;
     const int MOD = 1e9 + 7;
 
     long long getTotalSum(TreeNode* root) {
