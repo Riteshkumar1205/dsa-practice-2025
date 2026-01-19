@@ -13,26 +13,23 @@ public:
             }
         }
         
-        auto can = [&](int k) {
-            for (int i = k; i <= m; i++) {
-                for (int j = k; j <= n; j++) {
+        int ans = 0;
+        
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                int k = ans + 1;
+                if (i >= k && j >= k) {
                     int sum = pre[i][j]
                             - pre[i - k][j]
                             - pre[i][j - k]
                             + pre[i - k][j - k];
-                    if (sum <= threshold) return true;
+                    if (sum <= threshold) {
+                        ans = k;
+                    }
                 }
             }
-            return false;
-        };
-        
-        int left = 0, right = min(m, n);
-        while (left < right) {
-            int mid = left + (right - left + 1) / 2;
-            if (can(mid)) left = mid;
-            else right = mid - 1;
         }
         
-        return left;
+        return ans;
     }
 };
