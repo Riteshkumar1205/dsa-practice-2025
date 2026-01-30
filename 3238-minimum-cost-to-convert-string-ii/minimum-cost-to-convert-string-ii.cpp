@@ -10,7 +10,6 @@ public:
                            vector<int>& cost) {
         int n = source.size();
 
-        // ---- Rolling Hash ----
         vector<long long> powB(n + 1), hS(n + 1), hT(n + 1);
         powB[0] = 1;
         for (int i = 0; i < n; i++) {
@@ -23,7 +22,6 @@ public:
             return (h[r] - h[l] * powB[r - l] % MOD + MOD) % MOD;
         };
 
-        // ---- Group strings by length ----
         unordered_map<long long, int> id;
         map<int, vector<long long>> byLen;
         int idx = 0;
@@ -41,7 +39,6 @@ public:
             if (!id.count(b)) id[b] = idx++, byLen[changed[i].size()].push_back(b);
         }
 
-        // ---- Build per-length graphs ----
         unordered_map<int, vector<vector<long long>>> dist;
         unordered_map<int, unordered_map<long long,int>> localId;
 
@@ -63,7 +60,6 @@ public:
             dist[len][u][v] = min(dist[len][u][v], (long long)cost[i]);
         }
 
-        // ---- Floyd–Warshall per length ----
         for (auto& [len, d] : dist) {
             int m = d.size();
             for (int k = 0; k < m; k++)
@@ -73,7 +69,6 @@ public:
                             d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
         }
 
-        // ---- DP ----
         vector<long long> dp(n + 1, INF);
         dp[n] = 0;
 
