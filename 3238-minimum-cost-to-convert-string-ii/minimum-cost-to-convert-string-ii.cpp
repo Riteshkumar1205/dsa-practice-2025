@@ -10,10 +10,11 @@ public:
                            vector<int>& cost) {
         int n = source.size();
 
+        // ---- Rolling Hash ----
         vector<long long> powB(n + 1), hS(n + 1), hT(n + 1);
         powB[0] = 1;
         for (int i = 0; i < n; i++) {
-            powB[i + 1] = (powB[i] * BASE) % MOD;
+            powB[i + 1] = powB[i] * BASE % MOD;
             hS[i + 1] = (hS[i] * BASE + source[i]) % MOD;
             hT[i + 1] = (hT[i] * BASE + target[i]) % MOD;
         }
@@ -22,8 +23,9 @@ public:
             return (h[r] - h[l] * powB[r - l] % MOD + MOD) % MOD;
         };
 
+        // ---- Group strings by length ----
         unordered_map<long long, int> id;
-        vector<int> lens;
+        map<int, vector<long long>> byLen;
         int idx = 0;
 
         auto encode = [&](const string& s) {
@@ -32,34 +34,46 @@ public:
             return (h << 11) | s.size();
         };
 
-        for (auto& s : original) {
-            long long key = encode(s);
-            if (!id.count(key)) {
-                id[key] = idx++;
-                lens.push_back(s.size());
+        for (int i = 0; i < original.size(); i++) {
+            long long a = encode(original[i]);
+            long long b = encode(changed[i]);
+            if (!id.count(a)) id[a] = idx++, byLen[original[i].size()].push_back(a);
+            if (!id.count(b)) id[b] = idx++, byLen[changed[i].size()].push_back(b);
+        }
+
+        // ---- Build per-length graphs ----
+        unordered_map<int, vector<vector<long long>>> dist;
+        unordered_map<int, unordered_map<long long,int>> localId;
+
+        for (auto& [len, vec] : byLen) {
+            int m = vec.size();
+            dist[len].assign(m, vector<long long>(m, INF));
+            for (int i = 0; i < m; i++) {
+                localId[len][vec[i]] = i;
+                dist[len][i][i] = 0;
             }
         }
-        for (auto& s : changed) {
-            long long key = encode(s);
-            if (!id.count(key))
-                id[key] = idx++;
-        }
-
-        vector<vector<long long>> dist(idx, vector<long long>(idx, INF));
-        for (int i = 0; i < idx; i++) dist[i][i] = 0;
 
         for (int i = 0; i < original.size(); i++) {
-            dist[id[encode(original[i])]][id[encode(changed[i])]]
-                = min(dist[id[encode(original[i])]][id[encode(changed[i])]],
-                      (long long)cost[i]);
+            int len = original[i].size();
+            long long a = encode(original[i]);
+            long long b = encode(changed[i]);
+            int u = localId[len][a];
+            int v = localId[len][b];
+            dist[len][u][v] = min(dist[len][u][v], (long long)cost[i]);
         }
 
-        for (int k = 0; k < idx; k++)
-            for (int i = 0; i < idx; i++)
-                for (int j = 0; j < idx; j++)
-                    if (dist[i][k] < INF && dist[k][j] < INF)
-                        dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+        // ---- Floyd–Warshall per length ----
+        for (auto& [len, d] : dist) {
+            int m = d.size();
+            for (int k = 0; k < m; k++)
+                for (int i = 0; i < m; i++)
+                    for (int j = 0; j < m; j++)
+                        if (d[i][k] < INF && d[k][j] < INF)
+                            d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
+        }
 
+        // ---- DP ----
         vector<long long> dp(n + 1, INF);
         dp[n] = 0;
 
@@ -67,17 +81,16 @@ public:
             if (source[i] == target[i])
                 dp[i] = dp[i + 1];
 
-            for (int len : lens) {
+            for (auto& [len, vec] : byLen) {
                 if (i + len > n) continue;
 
-                long long hs = getHash(hS, i, i + len);
-                long long ht = getHash(hT, i, i + len);
-                long long ks = (hs << 11) | len;
-                long long kt = (ht << 11) | len;
+                long long hs = (getHash(hS, i, i + len) << 11) | len;
+                long long ht = (getHash(hT, i, i + len) << 11) | len;
 
-                if (!id.count(ks) || !id.count(kt)) continue;
+                if (!localId[len].count(hs) || !localId[len].count(ht))
+                    continue;
 
-                long long c = dist[id[ks]][id[kt]];
+                long long c = dist[len][localId[len][hs]][localId[len][ht]];
                 if (c < INF)
                     dp[i] = min(dp[i], c + dp[i + len]);
             }
