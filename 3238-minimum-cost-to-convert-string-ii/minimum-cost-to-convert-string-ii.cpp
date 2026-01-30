@@ -10,7 +10,6 @@ public:
                            vector<int>& cost) {
         int n = source.size();
 
-        // ---- Rolling Hash ----
         vector<long long> powB(n + 1), hS(n + 1), hT(n + 1);
         powB[0] = 1;
         for (int i = 0; i < n; i++) {
@@ -23,7 +22,6 @@ public:
             return (h[r] - h[l] * powB[r - l] % MOD + MOD) % MOD;
         };
 
-        // ---- Collect unique strings ----
         unordered_map<long long, int> id;
         vector<int> lens;
         int idx = 0;
@@ -47,7 +45,6 @@ public:
                 id[key] = idx++;
         }
 
-        // ---- Floyd–Warshall ----
         vector<vector<long long>> dist(idx, vector<long long>(idx, INF));
         for (int i = 0; i < idx; i++) dist[i][i] = 0;
 
@@ -63,7 +60,6 @@ public:
                     if (dist[i][k] < INF && dist[k][j] < INF)
                         dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
 
-        // ---- DP ----
         vector<long long> dp(n + 1, INF);
         dp[n] = 0;
 
