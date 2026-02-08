@@ -9,22 +9,24 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+ 
 class Solution {
 public:
-    bool isBalanced(TreeNode* root) {
-        return getHeight(root) != -1;
+    int height(TreeNode* root) {
+        if (!root) return 0;
+
+        int left = height(root->left);
+        if (left == -1) return -1;   
+
+        int right = height(root->right);
+        if (right == -1) return -1;  
+
+        if (abs(left - right) > 1) return -1; 
+
+        return max(left, right) + 1;
     }
 
-private:
-    int getHeight(TreeNode* root) {
-        if (root == nullptr) return 0;
-
-        int leftHeight = getHeight(root->left);
-        int rightHeight = getHeight(root->right);
-
-        if (leftHeight == -1 || rightHeight == -1) return -1;
-        if (abs(leftHeight - rightHeight) > 1) return -1;
-
-        return 1 + std::max(leftHeight, rightHeight);
+    bool isBalanced(TreeNode* root) {
+        return height(root) != -1;
     }
 };
