@@ -1,14 +1,13 @@
 class Solution {
-public:
+    public:
     int reverseBits(int n) {
         unsigned int result = 0;
-        
-        for (int i = 0; i < 32; i++) {
-            result <<= 1;          // Make space for next bit
-            result |= (n & 1);     // Add last bit of n
-            n >>= 1;               // Shift n right
+
+        for(int i = 0; i < 32; i++){
+            result <<= 1;
+            result |= (n & 1);
+            n >>= 1;
         }
-        
         return result;
     }
 };
