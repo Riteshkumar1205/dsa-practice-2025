@@ -1,7 +1,7 @@
 class Solution {
-public:
+    public:
     bool hasAlternatingBits(int n) {
         long long x = (long long)n ^ (n >> 1);
-        return (x & (x + 1)) == 0;
+        return(x & (x + 1)) == 0;
     }
 };
