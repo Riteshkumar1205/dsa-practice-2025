@@ -2,28 +2,30 @@ class Solution {
 public:
     string makeLargestSpecial(string s) {
         vector<string> parts;
-        int count = 0, start = 0;
-        
-        for (int i = 0; i < s.size(); i++) {
-            if (s[i] == '1') count++;
-            else count--;
-            
-            // Found a primitive special substring
-            if (count == 0) {
-                // Recursively process inside part
-                string inner = s.substr(start + 1, i - start - 1);
-                parts.push_back("1" + makeLargestSpecial(inner) + "0");
+        int balance = 0, start = 0;
+
+        for (int i = 0; i < s.size(); ++i) {
+            balance += (s[i] == '1') ? 1 : -1;
+
+            if (balance == 0) {
+                // Recursively process inner substring
+                parts.push_back("1" + 
+                    makeLargestSpecial(s.substr(start + 1, i - start - 1)) 
+                    + "0");
                 start = i + 1;
             }
         }
-        
-        // Sort in descending lexicographical order
+
+        // Sort descending for lexicographically largest
         sort(parts.begin(), parts.end(), greater<string>());
-        
+
+        // Efficient concatenation
         string result;
-        for (auto &p : parts)
-            result += p;
-            
+        result.reserve(s.size());
+        for (const string& part : parts) {
+            result += part;
+        }
+
         return result;
     }
 };
