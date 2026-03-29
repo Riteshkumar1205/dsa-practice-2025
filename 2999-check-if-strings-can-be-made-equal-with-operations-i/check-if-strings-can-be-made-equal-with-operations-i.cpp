@@ -1,17 +1,18 @@
 class Solution {
-public:
-    bool canBeEqual(string S1, string S2) {
-        string S1_even = {S1[0], S1[2]};
-        string S1_odd = {S1[1], S1[3]};
+    public:
+    bool canBeEqual(string s1, string s2){
+        string s1_even = {s1[0],s1[2]};
+        string s1_odd =  {s1[1],s1[3]};
 
-         string S2_even = {S2[0], S2[2]};
-         string S2_odd =  {S2[1], S2[3]};
+        string s2_even = {s2[0],s2[2]};
+        string s2_odd =  {s2[1],s2[3]};
 
-         sort(S1_even.begin(), S1_even.end());
-         sort(S1_odd.begin(), S1_odd.end());
-         sort(S2_even.begin(), S2_even.end());
-         sort(S2_odd.begin(), S2_odd.end());
+        sort(s1_even.begin(), s1_even.end());
+        sort(s1_odd.begin(), s1_odd.end());
 
-         return(S1_even == S2_even) && (S1_odd == S2_odd);
+        sort(s2_even.begin(), s2_even.end());
+        sort(s2_odd.begin(), s2_odd.end());
+        
+        return(s1_even == s2_even) && (s1_odd == s2_odd);
     }
 };
