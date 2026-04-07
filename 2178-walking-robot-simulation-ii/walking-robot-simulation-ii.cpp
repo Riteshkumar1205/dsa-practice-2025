@@ -24,28 +24,23 @@ public:
     void step(int num) {
         int move = num % cycle;
 
-        // 🔥 KEY FIX
         if (move == 0 && num > 0) {
             move = cycle;
         }
 
         while (move--) {
-            if (dir == 0) { // East
-                if (x + 1 < w) x++;
-                else { dir = 1; y++; }
-            }
-            else if (dir == 1) { // North
-                if (y + 1 < h) y++;
-                else { dir = 2; x--; }
-            }
-            else if (dir == 2) { // West
-                if (x - 1 >= 0) x--;
-                else { dir = 3; y--; }
-            }
-            else { // South
-                if (y - 1 >= 0) y--;
-                else { dir = 0; x++; }
-            }
+
+            // 🔥 FIX: Check BEFORE moving
+            if (dir == 0 && x + 1 >= w) dir = 1;
+            else if (dir == 1 && y + 1 >= h) dir = 2;
+            else if (dir == 2 && x - 1 < 0) dir = 3;
+            else if (dir == 3 && y - 1 < 0) dir = 0;
+
+            // move AFTER deciding direction
+            if (dir == 0) x++;
+            else if (dir == 1) y++;
+            else if (dir == 2) x--;
+            else y--;
         }
     }
 
