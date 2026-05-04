@@ -13,7 +13,6 @@ public:
             //bottom right = top right
             matrix[n-1-i][n-j-1] = matrix[j][n-1-i];
 
-            //top right = top left
             matrix[j][n-1-i] = matrix[i][j];
 
             //top left = temp
