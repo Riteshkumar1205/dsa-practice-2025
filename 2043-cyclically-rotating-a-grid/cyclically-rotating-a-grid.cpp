@@ -7,7 +7,8 @@ public:
         int layers = min(m, n) / 2;
 
         for (int layer = 0; layer < layers; layer++) {
-            vector<int> elems;
+
+            vector<int> elements;
 
             int top = layer;
             int left = layer;
@@ -16,29 +17,28 @@ public:
 
             // top row
             for (int j = left; j <= right; j++)
-                elems.push_back(grid[top][j]);
+                elements.push_back(grid[top][j]);
 
             // right column
             for (int i = top + 1; i <= bottom - 1; i++)
-                elems.push_back(grid[i][right]);
+                elements.push_back(grid[i][right]);
 
             // bottom row
             for (int j = right; j >= left; j--)
-                elems.push_back(grid[bottom][j]);
+                elements.push_back(grid[bottom][j]);
 
             // left column
             for (int i = bottom - 1; i >= top + 1; i--)
-                elems.push_back(grid[i][left]);
+                elements.push_back(grid[i][left]);
 
-            int len = elems.size();
+            int len = elements.size();
             int rot = k % len;
 
             vector<int> rotated(len);
 
-            // Counter-clockwise rotation
-            for (int i = 0; i < len; i++) {
-                rotated[i] = elems[(i + rot) % len];
-            }
+            // counter-clockwise rotation
+            for (int i = 0; i < len; i++)
+                rotated[i] = elements[(i + rot) % len];
 
             int idx = 0;
 
