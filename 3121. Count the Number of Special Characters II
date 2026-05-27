@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int numberOfSpecialChars(string word) {
+        // Track the last position of lowercase characters (-1 if not seen)
+        vector<int> lastLower(26, -1);
+        // Track the first position of uppercase characters (-1 if not seen)
+        vector<int> firstUpper(26, -1);
+        
+        for (int i = 0; i < word.length(); ++i) {
+            char c = word[i];
+            if (islower(c)) {
+                lastLower[c - 'a'] = i;
+            } else {
+                if (firstUpper[c - 'A'] == -1) {
+                    firstUpper[c - 'A'] = i;
+                }
+            }
+        }
+        
+        int specialCount = 0;
+        // Verify conditions for all 26 letters
+        for (int i = 0; i < 26; ++i) {
+            // Must have seen both, and the last lowercase must be before the first uppercase
+            if (lastLower[i] != -1 && firstUpper[i] != -1 && lastLower[i] < firstUpper[i]) {
+                specialCount++;
+            }
+        }
+        
+        return specialCount;
+    }
+};
