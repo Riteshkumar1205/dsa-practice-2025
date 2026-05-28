@@ -1,0 +1,93 @@
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// Flat structure optimized for an array/vector-based Trie
+struct FlatNode {
+    int children[26];
+    int best_idx;
+};
+
+class Solution {
+private:
+    // A single flat vector to act as our memory pool
+    vector<FlatNode> trie;
+
+    // Helper to create and initialize a new node in our vector pool
+    int createNode(int idx) {
+        FlatNode node;
+        for (int i = 0; i < 26; ++i) {
+            node.children[i] = -1; // -1 represents a null pointer/index
+        }
+        node.best_idx = idx;
+        trie.push_back(node);
+        return trie.size() - 1; // Return the integer "pointer" (index) to this node
+    }
+
+    void updateBestIndex(int& current_best, int new_idx, const vector<string>& wordsContainer) {
+        if (current_best == -1) {
+            current_best = new_idx;
+            return;
+        }
+        if (wordsContainer[new_idx].length() < wordsContainer[current_best].length()) {
+            current_best = new_idx;
+        } else if (wordsContainer[new_idx].length() == wordsContainer[current_best].length()) {
+            if (new_idx < current_best) {
+                current_best = new_idx;
+            }
+        }
+    }
+
+public:
+    vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) {
+        trie.clear(); // Clear memory pool for fresh execution
+
+        // 1. Find the default best index for the entire container
+        int default_best_idx = 0;
+        for (int i = 1; i < wordsContainer.size(); ++i) {
+            if (wordsContainer[i].length() < wordsContainer[default_best_idx].length()) {
+                default_best_idx = i;
+            }
+        }
+
+        // Create root at index 0
+        int root = createNode(default_best_idx);
+
+        // 2. Build the Trie with reversed words
+        for (int i = 0; i < wordsContainer.size(); ++i) {
+            string w = wordsContainer[i];
+            int curr = root;
+            
+            for (int j = w.length() - 1; j >= 0; --j) {
+                int idx = w[j] - 'a';
+                if (trie[curr].children[idx] == -1) {
+                    trie[curr].children[idx] = createNode(i);
+                }
+                curr = trie[curr].children[idx];
+                updateBestIndex(trie[curr].best_idx, i, wordsContainer);
+            }
+        }
+
+        // 3. Process each query
+        vector<int> ans;
+        for (const string& q : wordsQuery) {
+            int curr = root;
+            int matched_idx = trie[root].best_idx;
+
+            for (int j = q.length() - 1; j >= 0; --j) {
+                int idx = q[j] - 'a';
+                if (trie[curr].children[idx] != -1) {
+                    curr = trie[curr].children[idx];
+                    matched_idx = trie[curr].best_idx;
+                } else {
+                    break;
+                }
+            }
+            ans.push_back(matched_idx);
+        }
+
+        return ans;
+    }
+};
