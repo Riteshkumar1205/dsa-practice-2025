@@ -1,0 +1,21 @@
+class Solution {
+public:
+    bool asteroidsDestroyed(int mass, vector<int>& asteroids) {
+        // Sort the asteroids to apply the greedy approach
+        sort(asteroids.begin(), asteroids.end());
+        
+        // Use long long to prevent integer overflow during accumulation
+        long long currentMass = mass;
+        
+        for (int asteroid : asteroids) {
+            // If the planet is smaller than the current smallest asteroid, it's impossible
+            if (currentMass < asteroid) {
+                return false;
+            }
+            // Planet absorbs the asteroid and grows
+            currentMass += asteroid;
+        }
+        
+        return true;
+    }
+};
