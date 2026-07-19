@@ -1,0 +1,27 @@
+class Solution {
+public:
+    string smallestSubsequence(string s) {
+        vector<int> lastIndex(26, 0);
+        for (int i = 0; i < s.length(); ++i) {
+            lastIndex[s[i] - 'a'] = i;
+        }
+        
+        string res = "";
+        vector<bool> visited(26, false);
+        
+        for (int i = 0; i < s.length(); ++i) {
+            char curr = s[i];
+            if (visited[curr - 'a']) continue;
+            
+            while (!res.empty() && res.back() > curr && lastIndex[res.back() - 'a'] > i) {
+                visited[res.back() - 'a'] = false;
+                res.pop_back();
+            }
+            
+            res.push_back(curr);
+            visited[curr - 'a'] = true;
+        }
+        
+        return res;
+    }
+};
